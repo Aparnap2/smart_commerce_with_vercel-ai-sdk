@@ -1,9 +1,8 @@
 'use client';
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useChat } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Send, RotateCcw, X, ShoppingCart, Star, Search } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
-import { nanoid } from 'nanoid';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
@@ -28,9 +27,9 @@ const categories = [
 ];
 
 export default function Home() {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, setMessages } = useChat({
+    api: '/api/chat/route-ollama',
+  });
   const [isChatOpen, setIsChatOpen] = useState(false);
   const messagesEndRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -38,115 +37,31 @@ export default function Home() {
 
   // Scroll to latest message
   useEffect(() => {
-    console.log('[UI] Messages updated, scrolling to end');
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
-
-    console.log('[UI] Form submitted, input:', input);
-    const userMessage = {
-      id: nanoid(),
-      role: 'user',
-      content: input,
-    };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-
-    try {
-      console.log('[UI] Sending request to /api/chat');
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ messages: [...messages, userMessage] }),
-      });
-
-      console.log('[UI] Response received, status:', response.status);
-      console.log('[UI] Response headers:', JSON.stringify(Object.fromEntries(response.headers), null, 2));
-
-      const text = await response.text();
-      console.log('[UI] Raw response text:', text);
-
-      if (!response.ok) {
-        console.error('[UI] Response error, status:', response.status, 'text:', text);
-        toast.error('Failed to process chat response.');
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: nanoid(),
-            role: 'assistant',
-            content: `# Error\nError: ${text || 'Failed to process request.'}`,
-          },
-        ]);
-        setIsLoading(false);
-        return;
-      }
-
-      // Clean potential prefixes
-      const cleanedText = text.replace(/^f:/, '').replace(/^0:/g, '').trim();
-      console.log('[UI] Cleaned response text:', cleanedText);
-
-      if (!cleanedText) {
-        console.warn('[UI] Empty response received');
-        toast.error('Empty response from server.');
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: nanoid(),
-            role: 'assistant',
-            content: '# Error\nReceived an empty response. Please try again.',
-          },
-        ]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: nanoid(),
-            role: 'assistant',
-            content: cleanedText,
-          },
-        ]);
-        console.log('[UI] Added response to messages:', cleanedText);
-      }
-    } catch (error) {
-      console.error('[UI] Fetch error:', error.stack);
-      toast.error('Failed to process chat response.');
-      setMessages((prev) => [
-        {
-          id: nanoid(),
-          role: 'assistant',
-          content: '# Error\nSorry, there was an error processing your request. Please try again.',
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // Filter messages to display
   const displayedMessages = useMemo(() => {
-    console.log('[UI] Filtering messages for display');
     return messages.filter((m) => m.role !== 'system');
   }, [messages]);
 
+  // Handle errors from useChat
+  useEffect(() => {
+    if (error) {
+      console.error('[UI] Chat error:', error);
+      toast.error('Failed to process chat response.');
+    }
+  }, [error]);
+
   // Reset chat
   const resetChat = () => {
-    console.log('[UI] Resetting chat');
     setMessages([]);
     toast.success('Chat history reset!');
   };
 
   // Render message content
   const renderMessageContent = (message) => {
-    console.log('[UI] Rendering message:', JSON.stringify(message, null, 2));
     if (!message.content) {
-      console.warn('[UI] Message has no content:', message.id);
       return (
         <div className="text-gray-500 dark:text-gray-400 text-sm">
           No response content available.
@@ -185,7 +100,6 @@ export default function Home() {
         product.description.toLowerCase().includes(searchQuery.toLowerCase())) &&
       (selectedCategory === 'All' || product.category === selectedCategory)
   );
-  console.log('[UI] Filtered products:', filteredProducts.length);
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -199,19 +113,13 @@ export default function Home() {
                 type="text"
                 placeholder="Search products..."
                 className="px-4 py-2 rounded-full text-sm text-gray-800 w-64 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                value={searchQuery}
-                onChange={(e) => {
-                  console.log('[UI] Search query changed:', e.target.value);
-                  setSearchQuery(e.target.value);
-                }}
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <Search className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
             </div>
             <button
-              onClick={() => {
-                console.log('[UI] Opening chat');
-                setIsChatOpen(true);
-              }}
+              onClick={() => setIsChatOpen(true)}
               className="bg-white text-blue-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-50 transition"
             >
               Chat Support
@@ -224,10 +132,7 @@ export default function Home() {
           {categories.map((category) => (
             <button
               key={category.name}
-              onClick={() => {
-                console.log('[UI] Selected category:', category.name);
-                setSelectedCategory(category.name);
-              }}
+              onClick={() => setSelectedCategory(category.name)}
               className={`px-4 py-2 rounded-full text-sm whitespace-nowrap ${
                 selectedCategory === category.name
                   ? 'bg-blue-600 text-white'
@@ -278,7 +183,7 @@ export default function Home() {
                     {product.category}
                   </span>
                   <button
-                    onClick={() => console.log('[UI] Add to cart:', product.name)}
+                    onClick={() => toast.success(`Added ${product.name} to cart!`)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
                   >
                     Add to Cart
@@ -308,11 +213,8 @@ export default function Home() {
                 >
                   <RotateCcw size={18} />
                 </button>
-                <button
-                  onClick={() => {
-                    console.log('[UI] Closing chat');
-                    setIsChatOpen(false);
-                  }}
+                 <button
+                   onClick={() => setIsChatOpen(false)}
                   title="Close Chat"
                   className="text-xl p-1 hover:bg-white/20 rounded-full transition"
                 >
@@ -334,9 +236,8 @@ export default function Home() {
                   </p>
                 </div>
               )}
-              {displayedMessages.map((message, i) => {
-                console.log('[UI] Rendering message index:', i);
-                return message.role === 'user' ? (
+               {displayedMessages.map((message, i) => {
+                 return message.role === 'user' ? (
                   <motion.div
                     key={i}
                     className="flex justify-end"
@@ -389,10 +290,7 @@ export default function Home() {
               <input
                 type="text"
                 value={input}
-                onChange={(e) => {
-                  console.log('[UI] Input changed:', e.target.value);
-                  setInput(e.target.value);
-                }}
+                onChange={handleInputChange}
                 placeholder="Ask about orders, products, or support..."
                 className="flex-1 p-2 rounded-l-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
               />
@@ -413,10 +311,7 @@ export default function Home() {
       </AnimatePresence>
       {!isChatOpen && (
         <motion.button
-          onClick={() => {
-            console.log('[UI] Opening chat from button');
-            setIsChatOpen(true);
-          }}
+          onClick={() => setIsChatOpen(true)}
           className="fixed bottom-4 right-4 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}

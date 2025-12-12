@@ -1,8 +1,14 @@
-import { generateText } from 'ai';
-import { google } from '@ai-sdk/google';
+import { streamText } from 'ai';
+import { createOllama } from 'ollama-ai-provider';
 import { databaseQueryTool } from '../../../lib/tools/database';
 import { SYSTEM_PROMPT } from './system-prompt';
-import { env } from '../../../lib/env';
+
+// Create Ollama provider instance
+const ollama = createOllama({
+  baseURL: 'http://localhost:11434',
+});
+
+export const maxDuration = 30;
 
 export async function POST(req) {
   try {
@@ -33,15 +39,16 @@ export async function POST(req) {
       requiresTool = dataKeywords.some(keyword => lowerContent.includes(keyword));
     }
     if (!databaseQueryTool || typeof databaseQueryTool.execute !== 'function') {
-      console.error('[API_ROUTE] databaseQueryTool is not correctly configured:', databaseQueryTool);
+      console.error('[API_ROUTE_OLLAMA] databaseQueryTool is not correctly configured:', databaseQueryTool);
       return new Response('Internal server error: Tool not configured.', {
         status: 500,
         headers: { 'Content-Type': 'text/plain' },
       });
     }
 
-    const result = await generateText({
-      model: google('models/gemini-2.0-flash-exp'),
+    // Use Ollama for local development with streaming
+    const result = await streamText({
+      model: ollama('ministral-3:3b'),
       system: SYSTEM_PROMPT,
       messages,
       tools: {
@@ -51,36 +58,10 @@ export async function POST(req) {
       temperature: 0.5,
     });
 
-    // Extract response text
-    let responseText = result.text || '';
-
-    // Fallback if response is empty or incorrect
-    if (result.toolResults?.length > 0 && (!responseText || responseText.includes('Unfortunately'))) {
-      const toolResult = result.toolResults[0].result;
-      if (toolResult.llm_formatted_data) {
-        responseText = toolResult.llm_formatted_data;
-      } else if (toolResult.data?.length > 0) {
-        responseText = `Found ${toolResult.data.length} order(s) for bob@example.com.`;
-      } else {
-        responseText = 'Hi! I checked for orders associated with bob@example.com, but none were found. Please verify the email or provide more details.';
-      }
-    }
-
-    // Ensure response is not empty
-    if (!responseText) {
-      responseText = 'Hi! I processed your request, but no response was generated. Please try again.';
-    }
-
-    return new Response(responseText, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/plain',
-        'Cache-Control': 'no-cache',
-        'X-Content-Type-Options': 'nosniff',
-      },
-    });
+    // Return streaming response
+    return result.toDataStreamResponse();
   } catch (error) {
-    console.error('[API_ROUTE] Error:', error.stack);
+    console.error('[API_ROUTE_OLLAMA] Error:', error.stack);
     return new Response(
       `Error: ${error.message || 'An error occurred during the request.'}`,
       {
