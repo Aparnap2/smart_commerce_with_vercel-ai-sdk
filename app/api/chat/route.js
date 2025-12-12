@@ -1,8 +1,7 @@
 import { generateText } from 'ai';
-import { google } from '@ai-sdk/google';
 import { databaseQueryTool } from '../../../lib/tools/database';
 import { SYSTEM_PROMPT } from './system-prompt';
-import { env } from '../../../lib/env';
+import { getLLMModel, isDevelopment } from '../../../lib/ai/config';
 
 export async function POST(req) {
   try {
@@ -41,14 +40,14 @@ export async function POST(req) {
     }
 
     const result = await generateText({
-      model: google('models/gemini-2.0-flash-exp'),
+      model: getLLMModel(),
       system: SYSTEM_PROMPT,
       messages,
       tools: {
         db_query: databaseQueryTool,
       },
       toolChoice: requiresTool ? 'required' : 'auto',
-      temperature: 0.5,
+      temperature: isDevelopment() ? 0.7 : 0.5,
     });
 
     // Extract response text

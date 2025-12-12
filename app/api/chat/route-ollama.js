@@ -1,12 +1,7 @@
 import { streamText } from 'ai';
-import { createOllama } from 'ollama-ai-provider';
 import { databaseQueryTool } from '../../../lib/tools/database';
 import { SYSTEM_PROMPT } from './system-prompt';
-
-// Create Ollama provider instance
-const ollama = createOllama({
-  baseURL: 'http://localhost:11434',
-});
+import { getLLMModel, isDevelopment } from '../../../lib/ai/config';
 
 export const maxDuration = 30;
 
@@ -46,16 +41,16 @@ export async function POST(req) {
       });
     }
 
-    // Use Ollama for local development with streaming
+    // Use configured LLM with streaming
     const result = await streamText({
-      model: ollama('ministral-3:3b'),
+      model: getLLMModel(),
       system: SYSTEM_PROMPT,
       messages,
       tools: {
         db_query: databaseQueryTool,
       },
       toolChoice: requiresTool ? 'required' : 'auto',
-      temperature: 0.5,
+      temperature: isDevelopment() ? 0.7 : 0.5,
     });
 
     // Return streaming response
