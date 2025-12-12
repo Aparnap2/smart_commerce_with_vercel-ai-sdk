@@ -14,6 +14,8 @@ model Customer {
   email         String         @unique
   phone         String?
   address       String?
+  paymentMethod String?        // Added for e-commerce
+  billingAddress String?       // Added for e-commerce
   createdAt     DateTime       @default(now())
   orders        Order[]
   supportTickets SupportTicket[]
@@ -26,25 +28,35 @@ model Product {
   price       Float
   stock       Int
   image       String?
+  category    String?   // Added for e-commerce
+  sku         String?   // Added for e-commerce
+  rating      Float?   // Added for e-commerce
   orders      Order[]
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
-  customerId  Int
-  customer    Customer @relation(fields: [customerId], references: [id])
-  productId   Int
-  product     Product  @relation(fields: [productId], references: [id])
-  orderDate   DateTime @default(now())
-  total       Float
-  status      String
+  id              Int      @id @default(autoincrement())
+  customerId      Int
+  customer        Customer @relation(fields: [customerId], references: [id])
+  productId       Int
+  product         Product  @relation(fields: [productId], references: [id])
+  orderDate       DateTime @default(now())
+  total           Float
+  status          String
+  quantity        Int      @default(1)      // Added for e-commerce
+  paymentStatus   String?   // Added for e-commerce
+  shippingAddress String?   // Added for e-commerce
+  trackingNumber  String?   // Added for e-commerce
 }
 
 model SupportTicket {
-  id          Int      @id @default(autoincrement())
-  customerId  Int
-  customer    Customer @relation(fields: [customerId], references: [id])
-  issue       String
-  status      String
-  createdAt   DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  customerId      Int
+  customer        Customer @relation(fields: [customerId], references: [id])
+  issue           String
+  status          String
+  createdAt       DateTime @default(now())
+  priority        String?   // Added for e-commerce
+  relatedOrderId  Int?     // Added for e-commerce
+  resolution      String?   // Added for e-commerce
 }
