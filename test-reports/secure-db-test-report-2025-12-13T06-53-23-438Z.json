@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-12-13T06:53:23.436Z",
+  "testDuration": 0.295554,
+  "environment": {
+    "nodeVersion": "v22.20.0",
+    "databaseUrl": "postgresql:*****@localhost:5433/vercel_ai",
+    "ollamaModel": "ministral-3:3b",
+    "ollamaBaseUrl": "http://localhost:11434"
+  },
+  "results": {
+    "passed": 8,
+    "failed": 0,
+    "warnings": 0,
+    "securityIssues": [],
+    "errors": []
+  },
+  "performance": {
+    "dbConnection": 0.03531390500000001,
+    "dataAccess": 0.091112863,
+    "dataFormatting": 0.027545334999999994,
+    "errorHandling": 0.026416927999999985,
+    "multipleQueries": 0.08582614799999999,
+    "contextIsolation": 0.028003375000000004,
+    "llmIntegration": 0.0000938199999999938
+  }
+}

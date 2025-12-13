@@ -1,7 +1,7 @@
 import { streamText } from 'ai';
-import { databaseQueryTool } from '../../../lib/tools/database';
-import { SYSTEM_PROMPT } from './system-prompt';
-import { getLLMModel, isDevelopment } from '../../../lib/ai/config';
+import { databaseQueryTool } from '../../../../lib/tools/database';
+import { SYSTEM_PROMPT } from '../system-prompt';
+import { getLLMModel, isDevelopment } from '../../../../lib/ai/config';
 
 export const maxDuration = 30;
 

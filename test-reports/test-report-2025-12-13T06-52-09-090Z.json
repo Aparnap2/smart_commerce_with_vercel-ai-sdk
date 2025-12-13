@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-12-13T06:52:09.089Z",
+  "testDuration": 7.321599301999999,
+  "environment": {
+    "browser": "Chromium",
+    "headless": false,
+    "debugMode": true
+  },
+  "results": {
+    "passed": 10,
+    "failed": 0,
+    "warnings": 1,
+    "errors": []
+  },
+  "performance": {
+    "initialLoad": 0.8159624550000001,
+    "memoryUsage": 93.36004447937012,
+    "domContentLoaded": 1765608728163,
+    "loadEventEnd": 1765608728709
+  },
+  "network": {
+    "totalRequests": 38,
+    "apiRequests": 2,
+    "staticAssets": 23
+  }
+}

@@ -6,6 +6,7 @@ import { toast, Toaster } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSanitize from 'rehype-sanitize';
+import { useState, useRef, useEffect, useMemo } from 'react';
 
 // Product data
 const products = [

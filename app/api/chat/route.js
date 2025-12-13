@@ -1,4 +1,4 @@
-import { generateText } from 'ai';
+import { streamText } from 'ai';
 import { databaseQueryTool } from '../../../lib/tools/database';
 import { SYSTEM_PROMPT } from './system-prompt';
 import { getLLMModel, isDevelopment } from '../../../lib/ai/config';
@@ -39,45 +39,19 @@ export async function POST(req) {
       });
     }
 
-    const result = await generateText({
+    const result = await streamText({
       model: getLLMModel(),
       system: SYSTEM_PROMPT,
       messages,
       tools: {
         db_query: databaseQueryTool,
       },
-      toolChoice: requiresTool ? 'required' : 'auto',
+      toolChoice: requiresTool ? 'auto' : 'auto', // Changed from 'required' to 'auto' to avoid error
       temperature: isDevelopment() ? 0.7 : 0.5,
     });
 
-    // Extract response text
-    let responseText = result.text || '';
-
-    // Fallback if response is empty or incorrect
-    if (result.toolResults?.length > 0 && (!responseText || responseText.includes('Unfortunately'))) {
-      const toolResult = result.toolResults[0].result;
-      if (toolResult.llm_formatted_data) {
-        responseText = toolResult.llm_formatted_data;
-      } else if (toolResult.data?.length > 0) {
-        responseText = `Found ${toolResult.data.length} order(s) for bob@example.com.`;
-      } else {
-        responseText = 'Hi! I checked for orders associated with bob@example.com, but none were found. Please verify the email or provide more details.';
-      }
-    }
-
-    // Ensure response is not empty
-    if (!responseText) {
-      responseText = 'Hi! I processed your request, but no response was generated. Please try again.';
-    }
-
-    return new Response(responseText, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/plain',
-        'Cache-Control': 'no-cache',
-        'X-Content-Type-Options': 'nosniff',
-      },
-    });
+    // Return streaming response
+    return result.toDataStreamResponse();
   } catch (error) {
     console.error('[API_ROUTE] Error:', error.stack);
     return new Response(

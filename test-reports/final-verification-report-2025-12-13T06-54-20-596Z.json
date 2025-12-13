@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-12-13T06:54:20.594Z",
+  "verificationDuration": 0.242761558,
+  "environment": {
+    "nodeVersion": "v22.20.0",
+    "databaseUrl": "postgresql:*****@localhost:5433/vercel_ai",
+    "ollamaModel": "ministral-3:3b",
+    "ollamaBaseUrl": "http://localhost:11434",
+    "nodeEnv": "development"
+  },
+  "results": {
+    "passed": 5,
+    "failed": 1,
+    "warnings": 0,
+    "securityChecks": [
+      "Authentication requirement enforced",
+      "Data isolation properly enforced",
+      "Input validation working correctly",
+      "Parameterized queries implemented",
+      "All error scenarios properly handled",
+      "Excellent performance (under 100ms average)",
+      "Context isolation maintained in concurrent requests",
+      "Secure context handling not working correctly"
+    ],
+    "integrationChecks": [
+      "Database tool properly configured",
+      "Tool description includes security information",
+      "Security parameters included in schema",
+      "LLM formatted data available",
+      "Data properly formatted for LLM"
+    ],
+    "errors": []
+  },
+  "performance": {
+    "securityVerification": 0.06210306600000001,
+    "integrationVerification": 0.031947765,
+    "errorHandling": 0.023371647999999995,
+    "performanceTesting": 0.097374313,
+    "contextVerification": 0.027608697000000005
+  },
+  "summary": {
+    "securityScore": 80,
+    "integrationScore": 100,
+    "overallScore": 80
+  }
+}

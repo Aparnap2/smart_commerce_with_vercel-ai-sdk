@@ -1,0 +1,86 @@
+{
+  "timestamp": "2025-12-13T06:55:43.346Z",
+  "reportGenerationTime": "2025-12-13T06:55:43.346Z",
+  "totalReportsProcessed": 3,
+  "summary": {
+    "totalTests": 24,
+    "totalTestsPassed": 23,
+    "totalTestsFailed": 1,
+    "totalWarnings": 1,
+    "totalSecurityIssues": 0,
+    "totalErrors": 0,
+    "passRate": "95.83",
+    "failRate": "4.17",
+    "totalTestTime": "7.86",
+    "averageTestTime": "0.33"
+  },
+  "scores": {
+    "securityScore": 100,
+    "reliabilityScore": 95,
+    "performanceScore": 95,
+    "overallScore": 97
+  },
+  "overallStatus": "🟢 EXCELLENT",
+  "detailedResults": [
+    {
+      "reportName": "final-verification-report-2025-12-13T06-54-20-596Z.json",
+      "timestamp": "2025-12-13T06:54:20.594Z",
+      "testDuration": 0.242761558,
+      "results": {
+        "passed": 5,
+        "failed": 1,
+        "warnings": 0,
+        "securityIssues": 0,
+        "errors": 0
+      },
+      "environment": {
+        "nodeVersion": "v22.20.0",
+        "databaseUrl": "postgresql:*****@localhost:5433/vercel_ai",
+        "ollamaModel": "ministral-3:3b",
+        "ollamaBaseUrl": "http://localhost:11434",
+        "nodeEnv": "development"
+      }
+    },
+    {
+      "reportName": "secure-db-test-report-2025-12-13T06-53-23-438Z.json",
+      "timestamp": "2025-12-13T06:53:23.436Z",
+      "testDuration": 0.295554,
+      "results": {
+        "passed": 8,
+        "failed": 0,
+        "warnings": 0,
+        "securityIssues": 0,
+        "errors": 0
+      },
+      "environment": {
+        "nodeVersion": "v22.20.0",
+        "databaseUrl": "postgresql:*****@localhost:5433/vercel_ai",
+        "ollamaModel": "ministral-3:3b",
+        "ollamaBaseUrl": "http://localhost:11434"
+      }
+    },
+    {
+      "reportName": "test-report-2025-12-13T06-52-09-090Z.json",
+      "timestamp": "2025-12-13T06:52:09.089Z",
+      "testDuration": 7.321599301999999,
+      "results": {
+        "passed": 10,
+        "failed": 0,
+        "warnings": 1,
+        "securityIssues": 0,
+        "errors": 0
+      },
+      "environment": {
+        "browser": "Chromium",
+        "headless": false,
+        "debugMode": true
+      }
+    }
+  ],
+  "recommendations": [
+    "Fix 1 failed tests to improve reliability",
+    "Review 1 warnings for potential improvements"
+  ],
+  "securityRecommendations": [],
+  "performanceRecommendations": []
+}

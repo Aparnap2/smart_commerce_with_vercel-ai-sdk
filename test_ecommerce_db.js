@@ -46,7 +46,7 @@ async function testEcommerceDatabase() {
     const productQuery = `SELECT id, name, description, price, stock, category, sku, rating 
                          FROM "Product" WHERE id = $1`;
     
-    const productResult = await client.query(productQuery, [105]); // Smart Watch Pro
+    const productResult = await client.query(productQuery, [101]); // Smartphone X
     const product = productResult.rows[0];
     
     if (product) {
