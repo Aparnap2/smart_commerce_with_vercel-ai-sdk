@@ -5,8 +5,33 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  previewFeatures = ["driverAdapters", "postgresqlExtensions"]
 }
+
+// ============================================================================
+// User Preference Models
+// ============================================================================
+
+/// User embedding for preference history and semantic search
+/// Stores 384-dimensional vectors generated from user queries
+model UserEmbedding {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  embedding    Unsupported("vector(384)") @map("embedding")
+  queryText    String   @map("query_text")
+  contextType  String   @map("context_type")
+  contextId    String?  @map("context_id")
+  metadata     Json?    @default("{}")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, queryText, contextType, contextId])
+  @@map("user_embeddings")
+}
+
+// ============================================================================
+// E-Commerce Models
+// ============================================================================
 
 model Customer {
   id            Int            @id @default(autoincrement())
@@ -59,4 +84,62 @@ model SupportTicket {
   priority        String?   // Added for e-commerce
   relatedOrderId  Int?     // Added for e-commerce
   resolution      String?   // Added for e-commerce
+}
+
+// ============================================================================
+// Refund Models (Stripe Integration)
+// ============================================================================
+
+/// Refund record for tracking Stripe refunds
+model Refund {
+  id              Int      @id @default(autoincrement())
+  stripeRefundId  String   @unique @map("stripe_refund_id")
+  paymentIntentId String   @map("payment_intent_id")
+  orderId         Int?     @map("order_id")
+  customerEmail   String?  @map("customer_email")
+  amount          Int      // Amount in cents
+  currency        String   @default("usd")
+  status          String   // pending, succeeded, failed, canceled
+  reason          String?  // duplicate, fraudulent, requested_by_customer
+  idempotencyKey  String?  @map("idempotency_key")
+  metadata        Json?    @default("{}")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  order           Order?   @relation(fields: [orderId], references: [id])
+
+  @@map("refunds")
+  @@index([paymentIntentId])
+  @@index([orderId])
+  @@index([status])
+}
+
+/// Webhook event tracking for idempotency
+model WebhookEvent {
+  id          String   @id @default(uuid())
+  eventId     String   @unique @map("event_id")
+  eventType   String   @map("event_type")
+  processedAt DateTime @default(now()) @map("processed_at")
+  data        Json?    @default("{}")
+
+  @@map("webhook_events")
+  @@index([eventId])
+  @@index([eventType])
+}
+
+/// Order refund status tracking
+model OrderRefund {
+  id              Int      @id @default(autoincrement())
+  orderId         Int      @unique @map("order_id")
+  refundStatus    String   @default("none") @map("refund_status") // none, pending, partial, full
+  refundedAmount  Int      @default(0) @map("refund_amount") // Amount refunded in cents
+  lastRefundId    String?  @map("last_refund_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relation
+  order           Order    @relation(fields: [orderId], references: [id])
+
+  @@map("order_refunds")
 }
