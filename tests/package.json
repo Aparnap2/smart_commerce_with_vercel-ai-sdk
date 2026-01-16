@@ -1,0 +1,30 @@
+{
+  "name": "vercel-ai-sdk-tests",
+  "version": "1.0.0",
+  "description": "E-commerce Support Agent Test Suite",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:feature": "pnpm run test -- --testPathPattern=features",
+    "test:e2e": "pnpm run test -- --testPathPattern=e2e",
+    "test:load": "pnpm run test -- --testPathPattern=load",
+    "test:all": "pnpm run test -- --coverage",
+    "test:report": "pnpm run test:all && node scripts/generate-report.js",
+    "ollama:embed": "node scripts/ollama-embed.js",
+    "ollama:test-model": "node scripts/ollama-test-model.js",
+    "loadtest:qwen": "node scripts/load-test.js --model=qwen2.5-coder:3b",
+    "loadtest:granite": "node scripts/load-test.js --model=granite3.1-moe:3b",
+    "loadtest:compare": "node scripts/load-test-compare.js"
+  },
+  "dependencies": {
+    "@jest/globals": "^29.7.0",
+    "artillery": "^2.0.0",
+    "autocannon": "^7.15.0",
+    "jest": "^29.7.0",
+    "pg": "^8.11.3",
+    "playwright": "^1.40.0",
+    "redis": "^4.6.12",
+    "strip-ansi": "^7.1.0",
+    "uuid": "^9.0.1"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "timestamp": "2026-01-16T04:19:10.550Z",
+  "models": {
+    "qwen2.5-coder:3b": {
+      "tests": [
+        {
+          "model": "qwen2.5-coder:3b",
+          "prompt": "I want to refund my order #12345 because the produ",
+          "duration": 34124,
+          "success": true,
+          "responseLength": 1269
+        },
+        {
+          "model": "qwen2.5-coder:3b",
+          "prompt": "Where is my order? It was supposed to arrive yeste",
+          "duration": 5282,
+          "success": true,
+          "responseLength": 161
+        },
+        {
+          "model": "qwen2.5-coder:3b",
+          "prompt": "What wireless headphones do you have under $100?",
+          "duration": 23531,
+          "success": true,
+          "responseLength": 719
+        },
+        {
+          "model": "qwen2.5-coder:3b",
+          "prompt": "I need to open a support ticket for my defective p",
+          "duration": 22695,
+          "success": true,
+          "responseLength": 753
+        },
+        {
+          "model": "qwen2.5-coder:3b",
+          "prompt": "Hello, thank you for your help.",
+          "duration": 2539,
+          "success": true,
+          "responseLength": 52
+        }
+      ],
+      "avgDuration": 17634.2
+    },
+    "granite3.1-moe:3b": {
+      "tests": [
+        {
+          "model": "granite3.1-moe:3b",
+          "prompt": "I want to refund my order #12345 because the produ",
+          "duration": 8844,
+          "success": true,
+          "responseLength": 734
+        },
+        {
+          "model": "granite3.1-moe:3b",
+          "prompt": "Where is my order? It was supposed to arrive yeste",
+          "duration": 3509,
+          "success": true,
+          "responseLength": 414
+        },
+        {
+          "model": "granite3.1-moe:3b",
+          "prompt": "What wireless headphones do you have under $100?",
+          "duration": 6701,
+          "success": true,
+          "responseLength": 621
+        },
+        {
+          "model": "granite3.1-moe:3b",
+          "prompt": "I need to open a support ticket for my defective p",
+          "duration": 14314,
+          "success": true,
+          "responseLength": 1357
+        },
+        {
+          "model": "granite3.1-moe:3b",
+          "prompt": "Hello, thank you for your help.",
+          "duration": 1206,
+          "success": true,
+          "responseLength": 101
+        }
+      ],
+      "avgDuration": 6914.8
+    },
+    "nomic-embed-text:v1.5": {
+      "tests": [
+        {
+          "model": "nomic-embed-text:v1.5",
+          "prompt": "I want to refund my order #12345 because the produ",
+          "duration": 52,
+          "success": true,
+          "dimensions": 768
+        },
+        {
+          "model": "nomic-embed-text:v1.5",
+          "prompt": "Where is my order? It was supposed to arrive yeste",
+          "duration": 51,
+          "success": true,
+          "dimensions": 768
+        },
+        {
+          "model": "nomic-embed-text:v1.5",
+          "prompt": "What wireless headphones do you have under $100?",
+          "duration": 32,
+          "success": true,
+          "dimensions": 768
+        },
+        {
+          "model": "nomic-embed-text:v1.5",
+          "prompt": "I need to open a support ticket for my defective p",
+          "duration": 37,
+          "success": true,
+          "dimensions": 768
+        },
+        {
+          "model": "nomic-embed-text:v1.5",
+          "prompt": "Hello, thank you for your help.",
+          "duration": 34,
+          "success": true,
+          "dimensions": 768
+        }
+      ],
+      "avgDuration": 0
+    }
+  },
+  "summary": {
+    "totalTests": 15,
+    "passed": 15,
+    "failed": 0,
+    "avgDuration": 8196.733333333334
+  }
+}

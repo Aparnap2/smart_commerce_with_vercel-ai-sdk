@@ -1,0 +1,194 @@
+{
+  "timestamp": "2026-01-16T05:09:32.887Z",
+  "tests": [
+    {
+      "test": "DB-CONNECT",
+      "status": "PASS",
+      "message": "PostgreSQL connection established",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.905Z"
+    },
+    {
+      "test": "SCHEMA-TABLES",
+      "status": "PASS",
+      "message": "Found 4 tables: Customer, Order, Product, SupportTicket",
+      "details": {
+        "tables": [
+          "Customer",
+          "Order",
+          "Product",
+          "SupportTicket"
+        ]
+      },
+      "timestamp": "2026-01-16T05:09:32.908Z"
+    },
+    {
+      "test": "SCHEMA-REQUIRED",
+      "status": "PASS",
+      "message": "Table \"Customer\" exists",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.908Z"
+    },
+    {
+      "test": "SCHEMA-REQUIRED",
+      "status": "PASS",
+      "message": "Table \"Product\" exists",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.908Z"
+    },
+    {
+      "test": "SCHEMA-REQUIRED",
+      "status": "PASS",
+      "message": "Table \"Order\" exists",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.908Z"
+    },
+    {
+      "test": "SCHEMA-REQUIRED",
+      "status": "PASS",
+      "message": "Table \"SupportTicket\" exists",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.908Z"
+    },
+    {
+      "test": "SCHEMA-FK",
+      "status": "PASS",
+      "message": "Found 3 foreign key constraints",
+      "details": {
+        "constraints": [
+          "\"Order\"->\"Customer\"",
+          "\"Order\"->\"Product\"",
+          "\"SupportTicket\"->\"Customer\""
+        ]
+      },
+      "timestamp": "2026-01-16T05:09:32.909Z"
+    },
+    {
+      "test": "INTEGRITY-DUPLICATE",
+      "status": "PASS",
+      "message": "No duplicate customer emails",
+      "details": {
+        "duplicates": []
+      },
+      "timestamp": "2026-01-16T05:09:32.909Z"
+    },
+    {
+      "test": "INTEGRITY-INVALID-EMAIL",
+      "status": "FAIL",
+      "message": "Found 1 invalid emails",
+      "details": {
+        "count": 1
+      },
+      "timestamp": "2026-01-16T05:09:32.910Z"
+    },
+    {
+      "test": "INTEGRITY-NEG-STOCK",
+      "status": "PASS",
+      "message": "No negative stock values",
+      "details": {
+        "products": []
+      },
+      "timestamp": "2026-01-16T05:09:32.910Z"
+    },
+    {
+      "test": "INTEGRITY-ORDER-STATUS",
+      "status": "FAIL",
+      "message": "Found 4 orders with invalid status",
+      "details": {
+        "count": 4
+      },
+      "timestamp": "2026-01-16T05:09:32.911Z"
+    },
+    {
+      "test": "ISOLATION-ORDERS",
+      "status": "PASS",
+      "message": "Alice and Bob orders are isolated",
+      "details": {
+        "aliceOrders": 3,
+        "bobOrders": 1
+      },
+      "timestamp": "2026-01-16T05:09:32.912Z"
+    },
+    {
+      "test": "ISOLATION-QUERY",
+      "status": "PASS",
+      "message": "Query correctly returns only user data",
+      "details": {
+        "rowsChecked": 3
+      },
+      "timestamp": "2026-01-16T05:09:32.913Z"
+    },
+    {
+      "test": "SQL-INJECTION",
+      "status": "PASS",
+      "message": "Malicious email rejected: '; DROP TABLE Custom...",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.913Z"
+    },
+    {
+      "test": "SQL-INJECTION",
+      "status": "PASS",
+      "message": "Malicious email rejected: ' OR '1'='1...",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.913Z"
+    },
+    {
+      "test": "SQL-INJECTION",
+      "status": "PASS",
+      "message": "Malicious email rejected: admin' --...",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.914Z"
+    },
+    {
+      "test": "SQL-INJECTION",
+      "status": "PASS",
+      "message": "Malicious email rejected: 1; DELETE FROM Produ...",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.914Z"
+    },
+    {
+      "test": "SQL-PARAMETERIZATION",
+      "status": "PASS",
+      "message": "Table name validation working",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.915Z"
+    },
+    {
+      "test": "FORMAT-CUSTOMER",
+      "status": "PASS",
+      "message": "Customer has all required fields",
+      "details": {
+        "fields": [
+          "id",
+          "name",
+          "email",
+          "phone",
+          "address",
+          "paymentMethod",
+          "billingAddress",
+          "createdAt"
+        ]
+      },
+      "timestamp": "2026-01-16T05:09:32.915Z"
+    },
+    {
+      "test": "FORMAT-ORDER-JOIN",
+      "status": "PASS",
+      "message": "Order query includes joined customer/product data",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.915Z"
+    },
+    {
+      "test": "AUTH-BLANK-EMAIL",
+      "status": "PASS",
+      "message": "Blank email correctly returns no results",
+      "details": {},
+      "timestamp": "2026-01-16T05:09:32.916Z"
+    }
+  ],
+  "summary": {
+    "passed": 19,
+    "failed": 2,
+    "total": 21
+  }
+}
